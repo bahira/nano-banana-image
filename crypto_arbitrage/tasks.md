@@ -4,10 +4,10 @@
 - [x] Implement price fetching from Binance, Coinbase, Kraken
 - [x] Implement arbitrage opportunity detection
 - [x] Add simulation for trades
+- [x] Set up email reports via AgentMail
+- [x] Schedule with Task Scheduler on Windows
+- [x] Test full system
 - [ ] Add execution for low-risk trades (testnet)
 - [ ] Add more exchanges and pairs
 - [ ] Implement triangular arbitrage
-- [ ] Set up email reports
-- [ ] Schedule with cron (Task Scheduler on Windows)
-- [ ] Test full system
 - [ ] Scale to more assets

@@ -3,8 +3,14 @@ import time
 import json
 import logging
 from datetime import datetime
+from agentmail import AgentMail
 
 logging.basicConfig(filename='arbitrage.log', level=logging.INFO, format='%(asctime)s - %(message)s')
+
+# AgentMail setup
+api_key = "am_7621722fdcb54ac7db4962ecc3c658891e0d6e336d4e8a58d399735660d1b235"
+client = AgentMail(api_key=api_key)
+inbox_id = "thesentinelceo@agentmail.to"
 
 # Define exchanges
 exchanges = {
@@ -74,27 +80,30 @@ def simulate_trade(opportunity):
     pass
 
 def send_report():
-    # Placeholder for email
-    # Use smtplib or yagmail
-    # But need credentials
-    # For now, log
-    logging.info("Report sent (placeholder)")
-    pass
+    # Read recent log entries
+    try:
+        with open('arbitrage.log', 'r') as f:
+            lines = f.readlines()[-20:]  # Last 20 lines
+        report_text = ''.join(lines)
+    except:
+        report_text = "No log available."
+
+    client.inboxes.messages.send(
+        inbox_id=inbox_id,
+        to="romainabdelaal@gmail.com",
+        subject="Crypto Arbitrage Report",
+        text=f"Latest arbitrage monitoring report:\n\n{report_text}"
+    )
+    logging.info("Report sent via email")
 
 def main():
-    report_interval = 3600  # 1 hour
-    last_report = time.time()
-    while True:
-        prices = {ex: get_price(ex) for ex in exchanges}
-        logging.info(f"Prices: {json.dumps(prices)}")
-        opps = detect_opportunity(prices)
-        for opp in opps:
-            logging.info(opp)
-            simulate_trade(opp)
-        if time.time() - last_report > report_interval:
-            send_report()
-            last_report = time.time()
-        time.sleep(60)  # Check every minute
+    prices = {ex: get_price(ex) for ex in exchanges}
+    logging.info(f"Prices: {json.dumps(prices)}")
+    opps = detect_opportunity(prices)
+    for opp in opps:
+        logging.info(opp)
+        simulate_trade(opp)
+    send_report()
 
 if __name__ == "__main__":
     main()
